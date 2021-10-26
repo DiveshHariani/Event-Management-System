@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+      a {
+        color: white;
+      }
+
+      .navbar {
+        display: 'block';
+        z-index: 4;
+      }
+      .navbar-brand {
+        font-family: 'Microsoft Sans Serif';
+        font-weight: bold;
+        font-size: 20px;
+        width: 70px;
+      }
+      .btn-style {
+        border: 2px solid #009bd9;
+        border-radius: 30px;
+        color: white;
+      }
+      .btn-style:hover {
+        background: white;
+        color: black;
+      }
+      a:hover{
+        color: white;
+        text-decoration: underline;
+      }
+
+      .active{
+        border-bottom: 3px solid white;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      .sticky {
+        position: fixed;
+        top: 0;
+        width: 100%;
+      }
+
+      .sticky + .content {
+        padding-top: 60px;
+      }
+      </style>
+      {% block head %}
+      {% endblock head %}  
+    <title>{% block title %} {% endblock title %}</title>
+  </head>
+  <body>
+    {% block aboveNavBar %}
+    
+    {% endblock aboveNavBar %}
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg" id="navbar" style="background: #36517e; color: white;">
+        <a class="navbar-brand my-3" href="/">VESIT</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% block homeActive %} {% endblock %}">
+              <a class="nav-link" href="/events/">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item {% block upcomingActive %} {% endblock %}">
+              <a class="nav-link" href="/events/">Upcoming Events<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item {% block ongoingActive %} {% endblock %}">
+              <a class="nav-link" href="/events/ongoingevents">Ongoing Events<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item {% block previousActive %} {% endblock %}">
+              <a class="nav-link" href="/events/previousevents">Previous Events</a>
+            </li>
+          </ul>
+          {% if request.session.is_authenticated and request.session.is_priviledged %}
+            <a href="/events/ApproveEvent" class="nav-link {% block activeApproval %}{% endblock activeApproval %}"> Approvals </a>
+          {% endif %}
+          {% if request.session.is_authenticated %}
+            <!-- Example single danger button -->
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary dropdown-toggle ml-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Welcome {{ request.session.user_fname }}
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{% url 'dashboard:profile' %}">Profile</a>
+                <a class="dropdown-item" href="{% url 'dashboard:logout' %}">Logout</a>
+              </div>
+            </div>
+          {% else %}
+            <button type="button" class="btn btn-style mr-2 " data-toggle="modal" data-target="#loginModal">
+              Log in
+            </button>
+          {% endif %}
+        </div>
+      </nav>
+
+      <!-- Login Modal -->
+      <!-- LoginModal -->
+      <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModal" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="loginModal">Login</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="{% url 'dashboard:login' %}" method="POST"> 
+              {% csrf_token %}
+                <div class="form-group">
+                  <label for="username">Email</label>
+                  <input type="text" class="form-control" id="username" name="useremail" required>
+                </div>
+                <div class="form-group">
+                  <label for="pass1">Password</label>
+                  <input type="password" class="form-control" id="pass1" name="password" required>
+                </div>
+                  <button type="submit" class="btn btn-primary">Log in</button>
+            </form>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    {% block body %}
+
+    {% endblock body %}
+    <script>
+    window.onscroll = function() {myFunction()};
+
+    var navbar = document.getElementById("navbar");
+    var sticky = navbar.offsetTop;
+
+    function myFunction() {
+      if (window.pageYOffset >= sticky) {
+        navbar.classList.add("sticky")
+      } else {
+        navbar.classList.remove("sticky");
+      }
+    }
+    </script>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    {% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script> {% endcomment %}
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>

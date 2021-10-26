@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block ongoingActive %} active {% endblock ongoingActive %}
+{% block head %}
+  <style>
+  .addButton {
+    float: right;
+    margin-right: 10%;
+    margin-bottom: 5%;
+    border-radius: 40px;
+    color: black;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  body {
+    background-color: #eee;
+  }
+
+  .title {
+
+    margin-bottom: 50px;
+    text-transform: uppercase;
+  }
+
+  .card-block {
+    font-size: 1em;
+    position: relative;
+    margin: 0;
+    padding: 1em;
+    border: none;
+    border-top: 1px solid rgba(34, 36, 38, .1);
+    box-shadow: none;
+
+  }
+
+  .card {
+    font-size: 1em;
+    overflow: hidden;
+    padding: 5;
+    border: none;
+    border-radius: .28571429rem;
+    box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
+    margin-top: 20px;
+  }
+  .card-title {
+    font-family: 'Microsoft Sans Serif';
+    font-size: 5vh;
+    font-weight: bold;
+  }
+  .card-desc {
+    font-size: 5vh; 
+  }
+  </style>
+
+{% endblock head %}
+
+{% block body %}
+
+{%if events %}
+<div class='container-fluid row' >
+  {%for event in events %}
+  <div class="card text-center mx-auto shadow-lg" style='margin:auto; margin-top:2%; width: 45%; border-radius: 20px;'>
+    <div class="row">
+      <div class="col-sm-5 my-auto">
+        <img class="d-block w-100 mx-3" src='/media/{{event.postor}}' alt="" style="width: 20vh; border-radius: 2vh;">
+      </div>
+      <div class="col-sm-7">
+        <div class="card-block">
+          <p class="card-title">{{event.event_title}}</p>
+          <p class="card-desc">{{event.event_description|safe|truncatechars:50 }}</p>
+          <br>
+          <br>
+          <a href="/events/EventDetail/{{event.id}}" class="btn btn-primary">Know More</a>
+            <a href="{{event.registration_link}}" class="btn btn-success">Register</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{%endfor%}
+</div>
+  {%else%}
+  <h3 class="mx-4 my-2">No events right now</h3>
+  {%endif%}
+</div>
+
+{% if request.session.is_authenticated and request.session.is_priviledged %}
+  <div class="addEvent">
+    <a href="{% url 'events:add_event' %}" class="btn btn-primary addButton" type="submit">Add Event</a>
+  </div>
+{% endif %}
+{% endblock body %}
